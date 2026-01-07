@@ -6,12 +6,12 @@ import { useVendorStore } from "@/lib/store";
 
 export default function Home() {
   const router = useRouter();
-  const { isAuthenticated, isHydrated } = useVendorStore();
+  const { auth, isHydrated } = useVendorStore();
 
   useEffect(() => {
     if (!isHydrated) return;
-    router.replace(isAuthenticated ? "/dashboard" : "/login");
-  }, [isAuthenticated, isHydrated, router]);
+    router.replace(auth.isAuthenticated ? "/dashboard" : "/login");
+  }, [auth.isAuthenticated, isHydrated, router]);
 
   return null;
 }
