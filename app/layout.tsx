@@ -15,7 +15,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Providers>
           {children}
           <Toaster />
-        </Providers>
+        </Providers>  
       </body>
     </html>
   );

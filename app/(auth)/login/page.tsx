@@ -3,8 +3,8 @@ import LoginPage from "@/components/pages/login-page";
 
 export default function Page() {
   return (
-    <Suspense fallback={null}>
+    // <Suspense fallback={null}>
       <LoginPage />
-    </Suspense>
+    // </Suspense>
   );
 }
