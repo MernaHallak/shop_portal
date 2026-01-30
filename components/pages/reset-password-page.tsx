@@ -9,9 +9,14 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 
 export default function ResetPasswordPage() {
-  const router = useRouter();
+  // useSearchParams() بيعطيك واجهة قراءة محلية للـ URL الموجود بالمتصفح. 
+// get("token") مجرد قراءة من الذاكرة (زي تقرأ من object) → فوري ومو async
+// بالسيرفر كمبونانت بمررو ك prop نوعو promise عشان بدي أعمل await عليه.. وهي طريقة كتابة بالاصدارات الحديثة بالنيكست
+  
+const router = useRouter();
+// قراءة التوكين:
   const search = useSearchParams();
-  const token = search.get("token");
+  const token = search.get("token"); //بترجع string | null
 
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -19,6 +24,9 @@ export default function ResetPasswordPage() {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
   const [tokenValid, setTokenValid] = useState<boolean | null>(null);
+  // null = “لسّا عم نتحقق” (حالة loading للتحقق) حاليا عاملينا ك ui لبين ما تخلص ال setTimeout بس مستقبليا رح تكون لبين ما يخلص تحقق حقيقي من السيرفر
+  // true/false = نتيجة التحقق. هي من boolean
+  // هون التحقق اذا في توكين بالرابط او لا بس ما عم اتحقق من السيرفر بشكل حقيقي
 
   useEffect(() => {
     // simulate token verification
@@ -26,9 +34,9 @@ export default function ResetPasswordPage() {
     const t = setTimeout(() => {
       setTokenValid(Boolean(token));
     }, 600);
-    return () => clearTimeout(t);
+    return () => clearTimeout(t); //لما يتغير token أو الصفحة تنشال:React بينفّذ الـ cleanupبيلغي الـ timeout القديم
   }, [token]);
-
+// داخل useEffect + dependencies → يفضل جدًا تعمل cleanup حتى ما يصير تعارض اذا تغير التوكين فجاة وما كان خالص لسا وقت الاول او حتى اذا المستخدم طلع من الصفحة قبل ما يخلص الوقت فهاد غلط لأنك عم تعمل تحديث state على كومبوننت مش موجود.اما بباقي الحالات مو كتير ضروري
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -48,7 +56,7 @@ export default function ResetPasswordPage() {
       setSuccess(true);
 
       setTimeout(() => {
-        router.replace("/login");
+        router.replace("/login"); //استخدام replace حتى ما يرجع المستخدم لصفحة reset بالـ Back بعد ما خلّص.
       }, 1200);
     }, 1100);
   };

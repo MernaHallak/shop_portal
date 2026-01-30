@@ -14,8 +14,7 @@ export default function ForgotPasswordPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  // success: لتبديل الواجهة بين فورم وبين رسالة نجاح.
+  const [success, setSuccess] = useState(false); // success: لتبديل الواجهة بين فورم وبين رسالة نجاح.
   const [error, setError] = useState("");
 //   خطأ تحقق (Email invalid)
 // وبس يصير عندي api بصير حط فيه : 
@@ -25,7 +24,7 @@ export default function ForgotPasswordPage() {
   // فالزر ما عنده onClick هون؛ هو بس بيحرّك سلوك الفورم الافتراضي (submit).
   // e.preventDefault(): يمنع إرسال الفورم بالطريقة التقليدية (ريفريش/Reload). 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault(); //يمنع سلوك الفورم الافتراضي (ريفريش الصفحة
       setError("");
       if (!email.includes("@")) {
         setError("Email is invalid");
