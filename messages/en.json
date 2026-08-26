@@ -1,0 +1,123 @@
+{
+  "Metadata": {
+    "title": "Store Admin",
+    "description": "Store product administration dashboard"
+  },
+  "Common": {
+    "brand": "Store Console",
+    "language": "Language",
+    "switchingLanguage": "Switching language…",
+    "arabic": "العربية",
+    "english": "English",
+    "logout": "Log out",
+    "retry": "Try again",
+    "loading": "Loading…",
+    "unexpectedError": "Something went wrong. Please try again.",
+    "networkError": "Could not connect to the server. Check your connection and try again.",
+    "invalidCredentials": "The email address or password is incorrect.",
+    "accountUnavailable": "This account is inactive or has no available store.",
+    "unauthenticated": "Your session has expired. Please sign in again.",
+    "forbidden": "You do not have permission to perform this action.",
+    "notFound": "The requested data could not be found.",
+    "validationError": "Check the entered information and try again.",
+    "serverError": "The service is currently unavailable. Please try later.",
+    "login": "Sign in"
+  },
+  "Auth": {
+    "eyebrow": "Secure, simple management",
+    "loginTitle": "Welcome back",
+    "loginDescription": "Sign in to manage your products and monitor their status.",
+    "email": "Email address",
+    "emailPlaceholder": "name@example.com",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "submit": "Sign in",
+    "submitting": "Signing in…",
+    "checkingSession": "Checking your session…",
+    "emailRequired": "Enter a valid email address.",
+    "passwordRequired": "Enter your password.",
+    "loginError": "Could not sign in."
+  },
+  "Products": {
+    "eyebrow": "Store catalog",
+    "title": "Store products",
+    "description": "Review products, pricing and visibility from one place.",
+    "tableTitle": "Product list",
+    "tableDescription": "Products currently registered in your store.",
+    "product": "Product",
+    "updated": "Last updated",
+    "loading": "Loading products…",
+    "empty": "Your store has no products yet.",
+    "loadError": "Could not load store products.",
+    "price": "Price",
+    "category": "Category",
+    "subcategory": "Subcategory",
+    "status": "Status",
+    "active": "Active",
+    "inactive": "Inactive",
+    "imageAlt": "{name} product image",
+    "imagePlaceholder": "No image",
+    "unknownCategory": "Uncategorized",
+    "noDescription": "No description is available for this product.",
+    "results": "{count, plural, =0 {No products} one {One product} other {# products}}",
+    "unableToLoadProducts": "Unable to load products.",
+    "sessionExpired": "Your session has expired. Please sign in again.",
+    "refreshing": "Refreshing data...",
+    "addProduct": "Add product",
+    "createEyebrow": "Product management",
+    "createTitle": "Add new product",
+    "createDescription": "Enter the product information to add it to your store.",
+    "backToProducts": "Back to products",
+     "Validation": {
+      "translationArRequired": "Please enter {field} in Arabic.",
+      "translationEnRequired": "Please enter {field} in English.",
+      "fields": {
+        "description": "description",
+        "subcategory": "subcategory"
+      }
+    },
+    "create": {
+  "name": "Product name",
+  "nameAr": "Product name in Arabic",
+  "category": "Category",
+  "subcategory": "Subcategory",
+  "price": "Price",
+  "description": "Description",
+  "descriptionAr": "Description in Arabic",
+  "images": "Product images",
+  "active": "Product is active",
+  "submit": "Add product",
+  "submitting": "Adding product…",
+  "cancel": "Cancel",
+  "selectCategory": "Select category",
+  "loadingCategories": "Loading categories…",
+  "selectSubcategory": "Select subcategory",
+  "noSubcategories": "No subcategories are available for this category",
+  "imageHint": "You can upload up to 10 JPG, PNG, WEBP, or AVIF images, with a maximum size of 5MB per image.",
+  "selectedImages": "Selected images",
+  "previewAlt": "Preview of {name}",
+  "removeImage": "Remove image {name}",
+  "validation": {
+    "nameRequired": "Product name is required.",
+    "nameArRequired": "Arabic product name is required.",
+    "categoryRequired": "Please select a category.",
+    "priceRequired": "Price is required.",
+    "pricePositive": "Price must be greater than zero.",
+    "translationArRequired": "Please enter {field} in Arabic.",
+    "translationEnRequired": "Please enter {field} in English.",
+    "tooManyImages": "You can upload up to 10 images.",
+    "invalidImageType": "This image type is not supported.",
+    "imageTooLarge": "Image size must not exceed 5MB.",
+    "fields": {
+      "description": "description",
+      "subcategory": "subcategory"
+    }
+  }
+}
+  },
+  "SessionError": {
+    "title": "Something went wrong",
+    "description": "We couldn't verify your session right now.",
+    "retry": "Try again"
+  }
+}

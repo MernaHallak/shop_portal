@@ -1,25 +1,35 @@
-# Vendor Portal — Next.js 15 (App Router)
+# Store Admin Panel
 
-Converted from the provided React/Vite vendor portal to **Next.js 15 (App Router)** with:
-- **No `src/` directory**
-- **TypeScript**
-- **Tailwind**
-- **No ESLint** (no config, no scripts, and `next.config.mjs` ignores lint during build)
+A bilingual store administration interface built with Next.js 15 App Router.
 
-## Notes / Enhancements I applied
-- **LocalStorage-backed store** for:
-  - Auth (demo login)
-  - Products (add/edit + visibility toggle)
-  - Vendor profile (including logo)
-- **Product listing UI is a table/rows (admin-panel style)** — no tall per-product cards.
-- **Removed unused calendar + `react-day-picker`** to avoid React 19 peer-dependency conflicts.
+## Stack
 
-## Run
+- Next.js 15 and React 19
+- TypeScript
+- Tailwind CSS
+- `next-intl` (`ar` and `en`)
+- Axios
+- TanStack React Query
+- Route Handlers as a BFF
+- HttpOnly cookies for authentication tokens
+
+## Routes
+
+- `/ar/login` and `/en/login`
+- `/ar/products` and `/en/products`
+- `/` negotiates the default locale (`ar`) and redirects to the localized route.
+
+The browser only calls same-origin `/api/*` Route Handlers. Backend access tokens
+remain in HttpOnly cookies and are attached to upstream requests on the server.
+
+## Commands
+
 ```bash
 npm install
 npm run dev
+npx tsc --noEmit
+npm run build
 ```
 
-Demo credentials:
-- vendor@example.com
-- password
+Set `BACKEND_API_URL` in `.env.local`. Do not expose it with a
+`NEXT_PUBLIC_` prefix.
