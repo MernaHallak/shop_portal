@@ -6,6 +6,7 @@ import {Link, redirect} from "@/i18n/navigation";
 import {getSessionStatus} from "@/lib/auth/session";
 import { PageHeader } from "@/components/dashboard/page-header";
 import { getTranslations } from "next-intl/server";
+import { requireDashboardSession } from "@/lib/require-dashboard-session";
 
 interface CreateProductPageProps {
   params: Promise<{locale: "ar" | "en"}>;
@@ -17,19 +18,7 @@ export default async function CreateProductPage({
   const {locale} = await params;
     const t = await getTranslations("Products");
 
-  const sessionStatus = await getSessionStatus();
-
-  if (sessionStatus === "unauthenticated") {
-    redirect({href: "/login", locale});
-  }
-
-  if (sessionStatus === "forbidden") {
-    notFound();
-  }
-
-  if (sessionStatus === "unavailable") { //يعني خدمة التحقق نفسها فشلت → منرمي Error حتى error.tsx يعرض حالة خطأ مناسبة.
-    throw new Error("Unable to verify session"); 
-  }
+ await requireDashboardSession(locale);
 
   return (
  <DashboardShell>
@@ -43,7 +32,6 @@ export default async function CreateProductPage({
       </Link>
     }
    />
- 
    <ProductCreateForm />
  </DashboardShell>
   );

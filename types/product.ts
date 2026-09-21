@@ -14,14 +14,14 @@ export interface Pagination {
 }
 
 export interface ProductSubcategory {
-  id: string;
+ id: string;
   category_id: string;
   slug: string;
   name: string;
   name_i18n?: LocalizedText | null;
   description: string | null;
   description_i18n?: LocalizedText | null;
-}
+} 
 
 export interface Product {
   id: string;
@@ -50,6 +50,10 @@ export interface Product {
   subcategory_details: ProductSubcategory | null;
 }
 
+export interface ProductResponse {
+  product: Product;
+}
+
 export interface ProductImage {
   url: string; //رابط HTTP عادي
   secure_url: string; //فهو نفس الصورة عبر HTTPS المشفّر، ولهيك عادةً نستخدم secure_url بالفرونت.
@@ -70,17 +74,19 @@ export interface ProductsResponse {
 export interface CreateProductRequest { // مدخلات انشاء منتج
   name: string; 
   name_ar: string;
+
   category: string;
-  category_slug?: string;
+
   subcategory_id?: string;
-  subcategory_slug?: string;
-  subcategory?: string;
-  subcategory_ar?: string;
+
   price: number;
+
   description?: string;
   description_ar?: string;
+
   images?: File[]; //مصفوفة ملفات 
   // الصور لسا ملفات اختارها المستخدم أما:images: ProductImage[]; هاي منستخدمها بالـ response بعد ما الباك يرفع الصور عالكلاودينري ويرجع metadata معلومات بتوصف الصورة مثل: url و secure_url وغيرها 
+
   is_active?: boolean; 
 } 
 
@@ -92,4 +98,59 @@ export interface CreateProductRequest { // مدخلات انشاء منتج
 export interface CreateProductResponse {
   message: string;
   product: Product;
+}
+
+export interface DeleteProductResponse {
+  message: string;
+  deleted_product_id: string;
+}
+
+// هون خليت الحقول optional لأن PATCH  معناه عادةً تعديل جزئي، مو لازم تبعتي كل الحقول كل مرة. واصلا هيك بالسكيما مافي حقل مطلوب بس ببعت الحقول العدلتا
+export interface UpdateProductRequest {
+  name?: string;
+  name_ar?: string;
+
+  category?: string;
+
+  subcategory_id?: string | null;
+
+  price?: number;
+
+  description?: string | null;
+  description_ar?: string | null;
+
+  images?: File[];
+
+  is_active?: boolean;
+}
+
+export interface UpdateProductResponse {
+  message: string;
+  product: Product;
+}
+
+export interface HideProductResponse {
+  message: string;
+  product: Product;
+}
+
+export interface DeleteProductImageRequest {
+  public_id: string;
+}
+
+export interface DeleteProductImageResponse {
+  message: string;
+
+  product: {
+    id: string;
+    images: ProductImage[];
+    image_url: string | null;
+    image_public_id: string | null;
+  };
+
+  image_cleanup: {
+    attempted: number;
+    deleted: number;
+    failed: number;
+  };
 }

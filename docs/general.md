@@ -1,16 +1,16 @@
  ## التدفق رح يكون:  
 
-ProductCreateForm
+ProductCreateForm componant
         ↓
-useCreateProduct()
+useCreateProduct() hook
         ↓
-createProduct()
+createProduct() api function
         ↓
-POST /api/store/products/create
+POST /api/store/products/create api next
         ↓
-Next Route Handler
+Next Route Handler 
         ↓
-POST /api/admin/products/create
+POST /api/admin/products/create backend
         ↓
 Store API
 
@@ -185,6 +185,88 @@ Maps en to name and ar to name_ar. كلمة maps هون معناها "يربط/�
 تنيناتن بيشبهو بعض بيتنفذو بس تتفير قيمة من dependencies وبيتنفذو بعد ما الكود بيتنفذ 
 لكن ال useEffect: ما بترجع قيمة تستخدمها بالـ UI؛ هي لتنفيذ شيء بعد تغيّر state/props، مثل تصفير state أو طلب API أو localStorage.
 useEffect ينفذ بعد الـ render.
+React يتوقع من useEffect يرجع واحد من اثنين فقط: undefined أو:  function cleanup
+
+useEffect(() => {
+  هون عم ينفذذ كود معين هي ما بترجع شي يعني undefined
+  console.log("effect اشتغل"); تنفذ مباشرة عند دخول ال useEffect
+
+  return () => { هي اسما function cleanup
+    imagePreviews.forEach((image) => {
+      URL.revokeObjectURL(image.url);
+    })
+  };
+}, [imagePreviews]);
+اما هون وقت useEffect يشتغل، هو فقط يرجع دالة:
+() => {
+  imagePreviews.forEach(...)
+}
+React يحتفظ بهذه الدالة لوقت لاحق. لا ينفذها فورًا.
+حيث ان useEffect يسجّل cleanup خاص بـ url1 لكن لا ينفذه الا عند حدوث حالة من التنتين التحت 
+
+الـ return () => { ... } لا ينفذ فورًا. React ينفذه في حالتين:
+1) قبل ما يعيد تشغيل نفس useEffect بسبب تغيّر dependency
+2) لما يطلع الكومبوننت من الصفحة unmount
+اذا ما حذفت الروابط العم تتنانشى عند كل اضافة صورة لكل الصور من جديد او عند الخروج من الكمبونانت عم اضل عالفاضي فالاثر:
+روابط blob ممكن تبقى محجوزة بذاكرة المتصفح ممكن يصير memory leak، يعني ذاكرة محجوزة بلا داعي، خصوصًا لو الصور كثيرة أو حجمها كبير. لذلك نستخدم URL.revokeObjectURL لتنظيف روابط المعاينة لما ما نعود نحتاجها.  
+
 
 اما useMemo: إذا بدك تحسبي قيمة وترجعيها متل شرط find ليرجعلي القيمة المطابقة 
 useMemo ينفذ أثناء الـ render حتى يحسب القيمة، وليس بعده.
+
+------------------------------
+## الفرق بين undefined و null و "" :
+
+undefined يعني ما في قيمة محددة أصلاً.
+ null يعني أنا محدد عمداً إنه ما في قيمة.
+ "" يعني في قيمة من نوع string، بس فاضية.  
+
+if (product.description)  هذا يتحقق فقط إذا القيمة truthy. يعني ما بيدخل إذا كانت:  
+undefined
+null
+""
+أما:  if (product.description !== undefined)
+هذا يسأل سؤال واحد فقط: هل الحقل موجود ضمن التعديل؟  
+فهدول بيدخلوا:  
+"hello"
+""
+null
+وحدها هاي ما تدخل:  undefined
+
+نعمل validation بالـ ProductEditForm قبل استدعاء updateProduct() مشان نتحقق انو الاسم ما عدلو لقيمة فاضية لان لازم يكون الو قيمة 
+if (!name.trim()) {
+  errors.name = t("validation.nameRequired");
+}
+لأن وظيفة دالة الـ API هون مو validation، بل تقرر هل الحقل موجود ضمن الـ PATCH ولا لا. لان بال PATCHما ببعت كل الحقول متل الانشاء ببعت بس الحقول المعدلة 
+if (product.name !== undefined) {
+  formData.append("name", product.name);
+}
+
+هنا في فرق مهم عن create: استخدمت:
+!== undefined
+بدل:
+if (product.description)
+لأنه بالتعديل ممكن الأدمن يقصد يمسح الوصف، فالقيمة "" إلها معنى ولازم نوصلها للباك. 
+لأنه بالإنشاء إذا المستخدم ما عبّى الوصف، عادي ما ينبعت أصلاً للباك لأنه اختياري.
+-------------------
+## الفرق بين Client Component  و  Server Component:
+
+Client Component لازم يرجع JSX مباشرة ويعرض شي مبدئيًا، وبعدها يجيب الداتا بالـ useEffect أو React Query أو event handler.
+مثال على event handler :
+"use client";
+export default function ProductsList() {
+  async function handleClick() { // دالة داخل الكلينت كمبونانت تكون async عادي
+    const data = await getProducts(); //await يوقف تنفيذ الدالة التي هو بداخلها فقط، مو كل الكومبوننت ولا كل الصفحة
+  }
+  return <button onClick={handleClick}>Load</button>;
+}
+لان بالـ Client Component ما فيك توقفي الـ render وتستني بمثالنا فوق عرض الزر مباشرة وبس المستخدم يضغط الزر عليه بجيب الداتا يعني الكومبوننت ما انتظر الداتا قبل العرض
+أما Server Component عادي تكون async ما بيرجع JSX مباشرة، بيرجع Promise وتعمل await قبل ما ترجع JSX، لأن الانتظار يصير على السيرفر قبل إرسال الصفحة للمتصفح.
+
+--------------------------
+## حذف الصور:
+إذا عندك عدة صور مثل product.images[]، بدك طريقة تحددي أي صورة تنحذف، وغالبًا هاد بيكون عبر public_id ضمن endpoint حذف مستقل.
+أما إذا عندك صورة ثابتة واحدة مثل logo_url، فممكن يكفي تبعتي:
+logo_url: null
+الباك يكون مصمم يعتبر null = حذف الصورة من قاعدة البيانات على الأقل، أما حذف ملف Cloudinary نفسه فهاد سلوك إضافي لازم يكون الباك منفذه صراحة واذا ما منفذو بصير بدنا endpoint حذف مستقل 
+<!-- إذا الباك ما عم يحذف ملف Cloudinary لما تبعتي null، فإما يضيف منطق التنظيف بنفس PATCH، أو يعمل endpoint حذف مستقل يعتمد على public_id بيكون عندك logo_public_id وcover_public_id، واحد لكل صورة ثابتة -->

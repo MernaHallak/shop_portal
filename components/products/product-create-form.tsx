@@ -52,11 +52,11 @@ export function ProductCreateForm() {
     const [isActive, setIsActive] = useState(true);
 
     const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
-    const [formError, setFormError] = useState<string>();
+    const [formError, setFormError] = useState<string>(); //نوع الـ state هو:  string | undefined
 
     const categories = categoriesData?.categories ?? [];
 
-    const selectedCategory = useMemo( 
+    const selectedCategory = useMemo(
         () =>
             categories.find(
                 (category) => category.slug === categorySlug,
@@ -74,11 +74,12 @@ export function ProductCreateForm() {
         [subcategories, subcategoryId],
     );
 
-    const imagePreviews = useMemo(
+    const imagePreviews = useMemo( //useMemo هون رجّعت array جديدة للعرض اسمها imagePreviews.
         () =>
+            // يعني: مصفوفة previews، كل عنصر فيها فيه الملف الأصلي + رابط مؤقت لعرضه.
             images.map((file) => ({
                 file,
-                url: URL.createObjectURL(file), // يعمل رابط مؤقت داخل المتصفح للملف الموجود عند المستخدم
+                url: URL.createObjectURL(file), // يعمل رابط مؤقت داخل المتصفح للملف الموجود عند المستخدم لان الصورة اللي اختارها المستخدم من جهازه لسا ما انرفعت، فما عندها URL حقيقي. هون منعمل رابط مؤقت
                 //إذا المستخدم اختار صورة من جهازه، المتصفح يعطيك رابط مؤقت مثل blob:http://localhost:3000/abc-123 تستخدميه لعرض preview داخل المتصفح قبل رفع الصورة: <img src={previewUrl} alt="Preview" /> لا يصلح بهاد الرابط استخدام next/image
                 // blob URL = رابط مؤقت لعرض الصورة قبل الرفع
                 // secure_url = رابط حقيقي بعد رفع الصورة على Cloudinary
@@ -88,7 +89,7 @@ export function ProductCreateForm() {
     );
 
     useEffect(() => {
-        return () => {
+        return () => {//مشروحة بال general
             imagePreviews.forEach((image) => {
                 URL.revokeObjectURL(image.url);
             });
@@ -100,7 +101,7 @@ export function ProductCreateForm() {
         : undefined;
 
     function getCategoryName(
-        category: (typeof categories)[number],
+        category: (typeof categories)[number], //يعني نوع عنصر من عناصر المصفوفة categories يعني category كانو كتبت category:category لان ال categories: Category[]
     ) {
         return (
             category.name_i18n?.[locale] ??
@@ -121,25 +122,30 @@ export function ProductCreateForm() {
         );
     }
 
+    // لما المستخدم يغيّر قيمة حقل، تنادي clearFieldError("name") حتى تختفي رسالة الخطأ الخاصة بهذا الحقل فقط.
     function clearFieldError(field: string) {
+        // current هي القيمة الحالية للـ fieldErrors مثال:current = {
+        //   name: "Name is required",
+        //   price: "Price must be greater than 0"}
         setFieldErrors((current) => {
-            if (!current[field]) {
+            if (!current[field]) { //إذا هذا الحقل ما عنده خطأ، لا تغيّر شيئًا
                 return current;
             }
 
-            const next = { ...current };
-            delete next[field];
+            const next = { ...current }; // React ما بحب تعدلي state مباشرة لهيك عملت نسخة وعدلت عليا وعطيتا لل state
+            delete next[field]; //delete فهي كلمة جاهزة من JavaScript، تستخدم لحذف property من object
 
             return next;
         });
     }
 
-    function handleImagesChange(files: FileList | null) {
+    function handleImagesChange(files: FileList | null) { //FileList هو نوع جاهز من المتصفح، يمثل قائمة الملفات المختارة من input file مباشرة بس هو مو array لهيك منحولو لمصفوفة بعدين وبصير نوعو File[] 
         if (!files) {
             return;
         }
 
         const selectedFiles = Array.from(files);
+        // حولنا لمصفوفة حتى نقدر نستخدم عليه selectedFiles.length  selectedFiles.some(...) selectedFiles.map(...)
 
         if (selectedFiles.length > MAX_IMAGES) {
             setFieldErrors((current) => ({
@@ -150,12 +156,13 @@ export function ProductCreateForm() {
             return;
         }
 
-        const hasInvalidType = selectedFiles.some(
+        const hasInvalidType = selectedFiles.some( //some بترجع true/false ترجع true إذا لقت أي ملف واحد نوعه غير مسموح.
             (file) => !ALLOWED_IMAGE_TYPES.includes(file.type),
         );
 
         if (hasInvalidType) {
             setFieldErrors((current) => ({
+                // خذ الأخطاء الحالية، وخلي/أضف خطأ الصور
                 ...current,
                 images: t("validation.invalidImageType"),
             }));
@@ -176,17 +183,30 @@ export function ProductCreateForm() {
             return;
         }
 
+        // بس يكون اختيار الصورة صحيح منمسح الخطا السابق ومنضيف الصورة
         clearFieldError("images");
         setImages(selectedFiles);
     }
 
+    // تحذف صورة من images حسب رقمها/index
     function removeImage(index: number) {
         setImages((current) =>
-            current.filter((_, imageIndex) => imageIndex !== index),
+            current.filter((_, imageIndex) => imageIndex !== index), //filter ترجع مصفوفة جديدة، وتبقي فقط العناصر اللي الشرط تبعها true.
+            // أما _: هو العنصر نفسه، يعني file، لكننا لا نحتاجه. نحتاج فقط imageIndex.     
         );
 
-        clearFieldError("images");
+        clearFieldError("images"); // مو ضرورية لان نحنا ماسحين الخطا وقت اضافة صورة صحيحة بس هاد احتياطي
     }
+
+    // دوال تحقق بسيطة من اللغة اذا عربي او انكليزي 
+    function containsArabic(value: string) {
+        return /[\u0600-\u06FF]/.test(value);
+    }
+
+    function containsEnglish(value: string) {
+        return /[A-Za-z]/.test(value);
+    }
+
 
     async function handleSubmit(
         event: React.FormEvent<HTMLFormElement>,
@@ -205,6 +225,14 @@ export function ProductCreateForm() {
             errors.name_ar = t("validation.nameArRequired");
         }
 
+        if (containsArabic(name)) {
+            errors.name = t("validation.englishOnly");
+        }
+
+        if (containsEnglish(nameAr)) {
+            errors.name_ar = t("validation.arabicOnly");
+        }
+
         if (!categorySlug || !selectedCategory) {
             errors.category = t("validation.categoryRequired");
         }
@@ -218,7 +246,17 @@ export function ProductCreateForm() {
             errors.price = t("validation.pricePositive");
         }
 
-        Object.assign(
+        if (description && containsArabic(description)) {
+            errors.description = t("validation.englishOnly");
+        }
+
+        if (descriptionAr && containsEnglish(descriptionAr)) {
+            errors.description_ar = t("validation.arabicOnly");
+        }
+
+        Object.assign( //Object.assign معناها: انسخ/ادمج خصائص object الثاني داخل object الاول.
+            // يدمج مفاتيح هذا الـ object داخل errors الأساسي
+            //  خذ الأخطاء الراجعة من validateTranslatedFields  وضيفها داخل errors  
             errors,
             validateTranslatedFields(
                 description.trim(),
@@ -233,45 +271,64 @@ export function ProductCreateForm() {
                 }),
             ),
         );
-
+        // يحفظ أخطاء الحقول بالـ state حتى تظهر تحت inputs.
         setFieldErrors(errors);
+        // setFieldErrors({});  ما إلها داعي ضرورية هون؛ لأن setFieldErrors(errors) بعد الـ validation رح يستبدل الأخطاء القديمة بالجديدة.  
 
-        if (Object.keys(errors).length > 0) {
+        if (Object.keys(errors).length > 0) { //Object.keys(errors) ترجع مصفوفة بأسماء المفاتيح الموجودة داخل object.
+
             const firstErrorField = Object.keys(errors)[0];
 
             requestAnimationFrame(() => {
-                const element = document.querySelector<HTMLElement>(
+                // لو عندك كود بصري مثل تغيير مكان عنصر أو scroll، ممكن ينفذ بوقت غير مناسب: قبل ما يخلص تحديث الـ DOM أو قبل ما يحسب المتصفح أماكن العناصر.  فrequestAnimationFrame معناها:  يا متصفح، شغّل هذا الكود بالوقت المناسب قبل ما تحدّث شكل الشاشة.
+                // يعني لا تعمل scroll الآن فورًا، خليه قريب من لحظة تحديث الشاشة، حتى تكون الحسابات البصرية مثل مكان العنصر جاهزة.  
+                // requestAnimationFrame يؤجل scroll/focus حتى يأخذ React فرصة لتحديث الـ DOM، ويأخذ المتصفح فرصة لحساب الـ layout الجديد قبل الرسم.
+                // setFieldErrors(errors)
+                // ↓
+                // React يسجّل طلب تحديث
+                // ↓
+                // handleSubmit تكمّل وتخلص
+                // ↓
+                // React يعمل render جديد
+                // ↓
+                // DOM يتحدث
+                // ↓
+                // requestAnimationFrame callback يشتغل قبل الرسم القادم، وهون يصير scroll/focus
+                // ↓
+                // المتصفح يرسم الشاشة بعد تحديث الأخطاء وبعد تنفيذ السكرول بس الفترة بين عرض الاخطاء والسكرول قليلة جدا فببين كانو صارو سوا
+
+                // فـ requestAnimationFrame يفيد لما بدك تتعامل مع الـ DOM بعد ما يأخذ التحديث فرصته، مثل scrollIntoView وfocus.//لأن ظهور رسائل الأخطاء قد يغير ارتفاع الفورم ومكان الحقول، فبدونه ممكن scrollIntoView يعتمد على layout قديم أو غير مكتمل.
+                // لأن إضافة رسائل الأخطاء إلى الـ DOM قد تغيّر الـ layout مثل ارتفاع الفورم ومكان الحقول الرح يحسبا المتصفح ويعرضا
+                // requestAnimationFrame يعطي فرصة للمتصفح يحسب الـ layout الجديد بعد ما تحدثت الدوم قبل scrollIntoView. يعني الرسائل لسا ممكن ما انرسمت بصريًا للمستخدم، لكن وجودها بالـ DOM صار يؤثر على الحسابات مثل مكان العنصر وارتفاعه.
+
+                const element = document.querySelector<HTMLElement>( //querySelector يعني: دور داخل الصفحة على أول عنصر عنده attribute: data-field="${firstErrorField}  العنصر الراجع اعتبره HTMLElement
                     `[data-field="${firstErrorField}"]`,
                 );
 
-                element?.scrollIntoView({
+                element?.scrollIntoView({ //scrollIntoView إذا لقى العنصر، حرّك الصفحة لعنده بسلاسة وخليه بوسط الشاشة تقريبًا.
                     behavior: "smooth",
                     block: "center",
                 });
 
-                const input = element?.querySelector<
+                const input = element?.querySelector< //يدور فقط داخل هذا العنصر على أول: input أو textarea أو select
                     HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
                 >("input, textarea, select");
 
                 input?.focus();
             });
 
-            return;
+            return; //يوقف الدالة، يعني ما في إرسال للباك طالما في أخطاء محلية.
         }
 
         try {
-            await createProductMutation.mutateAsync({
+            await createProductMutation.mutateAsync({ //mutateAsync نفس فكرة mutate: تشغّل mutationFn وتبعت لها الداتا.
+                // لكن mutateAsync بترجع Promise يعني بدا await وبتتعاملين مع النجاح/الفشل عبر try/catch اما mutate ما بترجع Promise وبتتعاملين مع النجاح/الفشل عبر onSuccess/onError
                 name: name.trim(),
                 name_ar: nameAr.trim(),
 
-                category: selectedCategory!.name,
-                category_slug: selectedCategory!.slug,
+                category: selectedCategory!.name, //! معناها: “أنا متأكد أنها ليست undefined”، لأنك فحصت فوق
 
                 subcategory_id: selectedSubcategory?.id,
-                subcategory_slug: selectedSubcategory?.slug,
-                subcategory: selectedSubcategory?.name,
-                subcategory_ar:
-                    selectedSubcategory?.name_ar ?? undefined,
 
                 price: Number(price),
 
@@ -292,6 +349,7 @@ export function ProductCreateForm() {
             }
 
             setFieldErrors((current) => ({
+                // يدمج أخطاء الحقول القادمة من الباك مع الأخطاء الحالية
                 ...current,
                 ...normalizedError.fieldErrors,
             }));
@@ -375,7 +433,8 @@ export function ProductCreateForm() {
                                 clearFieldError("subcategory_id");
                             }}
                         >
-                            <option value="">
+                            {/* هذا اسمه placeholder option داخل <select> */}
+                            <option value="" disabled>
                                 {isCategoriesPending
                                     ? t("loadingCategories")
                                     : t("selectCategory")}
@@ -398,7 +457,7 @@ export function ProductCreateForm() {
                         )}
                     </div>
 
-                    <div className="field"  data-field="subcategory_id">
+                    <div className="field" data-field="subcategory_id">
                         <label htmlFor="subcategory">
                             {t("subcategory")}
                         </label>
@@ -638,13 +697,14 @@ export function ProductCreateForm() {
                         {t("cancel")}
                     </button>
 
+                    {/* أي زر داخل <form> ونوعه submit لما ينضغط يشغّل حدث الفورم:<form onSubmit={handleSubmit}> وhandleSubmit هي التي ترسل الداتا.*/}
                     <button
                         className="primary-button product-submit-button"
                         type="submit"
                         disabled={
-                            createProductMutation.isPending ||
-                            isCategoriesPending ||
-                            isCategoriesError
+                            createProductMutation.isPending || //طلب إنشاء المنتج شغال، حتى ما يضغط مرتين.
+                            isCategoriesPending || //يعطّل الزر لحد ما تجهز الخيارات بدل ما المستخدم يضغط ويشوف error.
+                            isCategoriesError //يعطّل الزر لأن الفورم ناقص بيانات أساسية من الباك.
                         }
                     >
                         {createProductMutation.isPending && (

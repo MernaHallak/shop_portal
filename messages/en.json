@@ -68,7 +68,7 @@
     "createTitle": "Add new product",
     "createDescription": "Enter the product information to add it to your store.",
     "backToProducts": "Back to products",
-     "Validation": {
+    "Validation": {
       "translationArRequired": "Please enter {field} in Arabic.",
       "translationEnRequired": "Please enter {field} in English.",
       "fields": {
@@ -77,47 +77,144 @@
       }
     },
     "create": {
-  "name": "Product name",
-  "nameAr": "Product name in Arabic",
-  "category": "Category",
-  "subcategory": "Subcategory",
-  "price": "Price",
-  "description": "Description",
-  "descriptionAr": "Description in Arabic",
-  "images": "Product images",
-  "active": "Product is active",
-  "submit": "Add product",
-  "submitting": "Adding product…",
-  "cancel": "Cancel",
-  "selectCategory": "Select category",
-  "loadingCategories": "Loading categories…",
-  "selectSubcategory": "Select subcategory",
-  "noSubcategories": "No subcategories are available for this category",
-  "imageHint": "You can upload up to 10 JPG, PNG, WEBP, or AVIF images, with a maximum size of 5MB per image.",
-  "selectedImages": "Selected images",
-  "previewAlt": "Preview of {name}",
-  "removeImage": "Remove image {name}",
-  "validation": {
-    "nameRequired": "Product name is required.",
-    "nameArRequired": "Arabic product name is required.",
-    "categoryRequired": "Please select a category.",
-    "priceRequired": "Price is required.",
-    "pricePositive": "Price must be greater than zero.",
-    "translationArRequired": "Please enter {field} in Arabic.",
-    "translationEnRequired": "Please enter {field} in English.",
-    "tooManyImages": "You can upload up to 10 images.",
-    "invalidImageType": "This image type is not supported.",
-    "imageTooLarge": "Image size must not exceed 5MB.",
-    "fields": {
-      "description": "description",
-      "subcategory": "subcategory"
+      "name": "Product name",
+      "nameAr": "Product name in Arabic",
+      "category": "Category",
+      "subcategory": "Subcategory",
+      "price": "Price",
+      "description": "Description",
+      "descriptionAr": "Description in Arabic",
+      "images": "Product images",
+      "active": "Product is active",
+      "submit": "Add product",
+      "submitting": "Adding product…",
+      "cancel": "Cancel",
+      "selectCategory": "Select category",
+      "loadingCategories": "Loading categories…",
+      "selectSubcategory": "Select subcategory",
+      "noSubcategories": "No subcategories are available for this category",
+      "imageHint": "You can upload up to 10 JPG, PNG, WEBP, or AVIF images, with a maximum size of 5MB per image.",
+      "selectedImages": "Selected images",
+      "previewAlt": "Preview of {name}",
+      "removeImage": "Remove image {name}",
+      "validation": {
+        "nameRequired": "Product name is required.",
+        "nameArRequired": "Arabic product name is required.",
+        "categoryRequired": "Please select a category.",
+        "priceRequired": "Price is required.",
+        "pricePositive": "Price must be greater than zero.",
+        "translationArRequired": "Please enter {field} in Arabic.",
+        "translationEnRequired": "Please enter {field} in English.",
+        "tooManyImages": "You can upload up to 10 images.",
+        "invalidImageType": "This image type is not supported.",
+        "imageTooLarge": "Image size must not exceed 5MB.",
+        "englishOnly": "Please enter text in English only.",
+        "arabicOnly": "Please enter text in Arabic only.",
+        "fields": {
+          "description": "description",
+          "subcategory": "subcategory"
+        }
+      }
+    },
+    "actions": {
+      "label": "Actions",
+      "delete": "Delete product",
+      "deleting": "Deleting product…",
+      "deleteConfirmTitle": "Delete product",
+      "deleteConfirmMessage": "Are you sure you want to delete this product? This action cannot be undone.",
+      "cancel": "Cancel",
+      "confirmDelete": "Delete",
+      "edit": "Edit product",
+      "view": "View product"
+    },
+    "edit": {
+      "title": "Edit product",
+      "description": "Update the product information, then save your changes.",
+      "loading": "Loading product information…",
+      "currentImages": "Current images",
+      "newImages": "Add new images",
+      "submit": "Save changes",
+      "submitting": "Saving changes…",
+      "cancel": "Cancel",
+      "noChanges": "No changes were made to the product.",
+       "removeExistingImage": "Delete image",
+    "deletingImage": "Deleting image…",
+    "imageDeletedSuccessfully": "Image deleted successfully."
+    },
+    "details": {
+      "title": "Product details",
+      "pageDescription": "View all product information.",
+      "loading": "Loading product information…",
+      "loadError": "Failed to load product information.",
+      "edit": "Edit product",
+      "name": "Product name",
+      "price": "Price",
+      "category": "Category",
+      "subcategory": "Subcategory",
+      "status": "Status",
+      "active": "Active",
+      "inactive": "Inactive",
+      "description": "Description",
+      "images": "Product images",
+      "noImages": "No images available.",
+      "notAvailable": "Not available"
     }
-  }
-}
   },
   "SessionError": {
     "title": "Something went wrong",
     "description": "We couldn't verify your session right now.",
     "retry": "Try again"
+  },
+  "Dashboard": {
+    "products": "Products",
+    "storeSettings": "Store settings",
+    "store": "Store",
+    "loadingStore": "Loading store..."
+  },
+  "Store": {
+    "details": {
+      "title": "Store settings",
+      "pageDescription": "View and manage your store information.",
+      "loading": "Loading store information…",
+      "loadError": "Failed to load store information.",
+      "edit": "Edit store",
+      "name": "Store name",
+      "location": "Location",
+      "phone": "Phone",
+      "status": "Status",
+      "active": "Active",
+      "inactive": "Inactive",
+      "description": "Description",
+      "socialLinks": "Social links",
+      "notAvailable": "Not available"
+    },
+    "edit": {
+      "title": "Edit store",
+      "pageDescription": "Update your store information and save the changes.",
+      "loading": "Loading store information…",
+      "loadError": "Failed to load store information.",
+      "retry": "Try again",
+      "name": "Store name in English",
+      "nameAr": "Store name in Arabic",
+      "description": "Description in English",
+      "descriptionAr": "Description in Arabic",
+      "location": "Location in English",
+      "locationAr": "Location in Arabic",
+      "phone": "Phone",
+      "logo": "Store logo",
+      "cover": "Cover image",
+      "submit": "Save changes",
+      "submitting": "Saving changes…",
+      "cancel": "Cancel",
+      "noChanges": "No changes were made.",
+      "updateError": "Failed to update store information.",
+      "logoPreview": "Store logo preview",
+      "coverPreview": "Store cover preview",
+      "validation": {
+        "nameRequired": "Store name is required.",
+        "invalidImageType": "Unsupported image type. Use JPEG, PNG, WebP, or AVIF.",
+        "imageTooLarge": "Image size must not exceed 5MB."
+      }
+    }
   }
 }

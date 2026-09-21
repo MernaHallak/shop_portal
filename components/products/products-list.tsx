@@ -1,25 +1,35 @@
 "use client";
 
+import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 
 import { useStoreProducts } from "@/hook/queries/use-store-products";
 import { useRouter } from "@/i18n/navigation";
 import { normalizeApiError } from "@/lib/api-error";
 import { getLocalizedValue } from "@/lib/i18n/get-localized-value";
-import type { SupportedLocale } from "@/types/product";
+import type { LocalizedText, Product, SupportedLocale } from "@/types/product";
+import { useDeleteProduct } from "@/hook/mutations/use-delete-product";
 import Image from "next/image";
+import { Eye, Pencil, Trash2 } from "lucide-react";
+import { useHideProduct } from "@/hook/mutations/use-hide-product";
+import { useUpdateProduct } from "@/hook/mutations/use-update-product";
 // الحماية الاساسية بال ProductsPage هذا فقط حماية إضافية لو طلب ProductsList فشل بعد ما الصفحة انعرضت، لأنه useEffect يشتغل بعد أول render، لذلك ممكن يظهر جزء من الصفحة لحظة قصيرة.
 // بما انو شرط ال ProductsPage تحقق فالتوكن صالح والطلب صحيح بس ممكن بحالات نادرة التوكن انتهى بين فحص ProductsPage وبين طلب ProductsList فهون فايدة ال useEffect
-const TABLE_COLUMN_COUNT = 6;
+const TABLE_COLUMN_COUNT = 7;
 
 export function ProductsList() {
   const t = useTranslations("Products");
   const common = useTranslations("Common");
+  const actionsT = useTranslations("Products.actions");
   const locale = useLocale() as SupportedLocale;
   const router = useRouter();
 
+  const deleteProductMutation = useDeleteProduct();
   const { data, isPending, isError, error, refetch, isFetching } =
     useStoreProducts();
+
+  const hideProductMutation = useHideProduct();
+  const updateProductMutation = useUpdateProduct();
 
   const normalizedError = isError ? normalizeApiError(error) : undefined;
 
@@ -30,6 +40,61 @@ export function ProductsList() {
       : data
         ? t("results", { count: data.pagination.total })
         : t("empty");
+
+  // هذا state يخزن المنتج الذي المستخدم يريد حذفه.
+  const [productToDelete, setProductToDelete] = useState<{
+    id: string;
+    name_i18n: LocalizedText | null;
+  } | null>(null);
+
+  // deleteError تعبر عن رسالة خطأ خاصة بعملية الحذف
+  const [deleteError, setDeleteError] = useState<string>();
+
+  const [updatingProductId, setUpdatingProductId] =
+  useState<string | null>(null);
+
+
+ async function handleStatusToggle(product: Product) {
+  setUpdatingProductId(product.id);
+  // هون الدالة بتستنى العملية تخلص await hideProductMutation.mutateAsync(...) او  await updateProductMutation.mutateAsync(...).  بس بعد ما تخلص، بيفوت على: finally   فالقيمة setUpdatingProductId ما بتنمسح مباشرة، بتضل طول مدة الـ request. وبس يخلص الريكويست بتصير null وبتختفي حالة التعطيل disabled للزر.
+  try {
+    if (product.is_active) {
+      await hideProductMutation.mutateAsync(product.id);
+    } else {
+      await updateProductMutation.mutateAsync({
+        productId: product.id,
+        updateData: {
+          is_active: true,
+        },
+      });
+    }
+  } finally {
+    setUpdatingProductId(null);
+  }
+}
+
+  async function handleDeleteProduct() {
+    if (!productToDelete) {
+      return;
+    }
+
+    setDeleteError(undefined);
+
+    try {
+      await deleteProductMutation.mutateAsync(
+        productToDelete.id,
+      );
+
+      setProductToDelete(null); //إذا الحذف نجح، صفّر productToDelete
+    } catch (error) {
+      const normalizedError = normalizeApiError(error);
+
+      setDeleteError(
+        normalizedError.message ??
+        common(normalizedError.translationKey),
+      );
+    }
+  }
 
   return (
     <section className="data-table-panel" aria-labelledby="products-table-title">
@@ -64,6 +129,7 @@ isFetching = أي عملية fetch شغالة: أول تحميل أو تحديث
               <th scope="col">{t("category")}</th>
               <th scope="col">{t("subcategory")}</th>
               <th scope="col">{t("price")}</th>
+              <th scope="col">{actionsT("label")}</th>
               <th scope="col">{t("status")}</th>
               <th scope="col">{t("updated")}</th>
             </tr>
@@ -185,12 +251,58 @@ isFetching = أي عملية fetch شغالة: أول تحميل أو تحديث
                     </td>
 
                     <td>
-                      <span
-                        className={`status-badge table-status ${product.is_active ? "active" : "inactive"
+                      <div className="product-row-actions">
+                        <button
+                          type="button"
+                          className="product-action-button"
+                          aria-label={t("actions.view")}
+                          title={t("actions.view")}
+                          onClick={() => router.push(`/products/${product.id}`)}
+                        >
+                          <Eye size={18} />
+                        </button>
+
+                        <button
+                          className="product-action-button danger"
+                          type="button"
+                          aria-label={actionsT("delete")}
+                          title={actionsT("delete")}
+                          onClick={() =>
+                            setProductToDelete({
+                              id: product.id,
+                              name_i18n: product.name_i18n ?? null,
+                            })
+                          }
+                        >
+                          <Trash2 size={18} />
+                        </button>
+
+                        <button
+                          className="product-action-button"
+                          type="button"
+                          aria-label={actionsT("edit")}
+                          title={actionsT("edit")}
+                          onClick={() =>
+                            router.push(`/products/${product.id}/edit`)
+                          }
+                        >
+                          <Pencil size={18} />
+                        </button>
+                      </div>
+                    </td>
+
+                    <td>
+                      <button
+                        type="button"
+                        className={`product-status-button ${product.is_active ? "active" : "inactive"
                           }`}
+                        onClick={() => handleStatusToggle(product)}
+                       disabled={updatingProductId === product.id} //فبس زر هالمنتج يتعطل
                       >
-                        {t(product.is_active ? "active" : "inactive")}
-                      </span>
+                        {product.is_active
+                          ? t("active")
+                          : t("inactive")}
+                      </button>
                     </td>
 
                     <td className="date-cell">
@@ -209,8 +321,78 @@ isFetching = أي عملية fetch شغالة: أول تحميل أو تحديث
           </tbody>
         </table>
       </div>
+
+      {/* Confirmation modal delete */}
+      {productToDelete && (
+        // الـ backdrop هو الخلفية اللي بتغطي الشاشة كلها.
+        // الـ onClick على الـ div الخارجي معمول حتى إذا المستخدم ضغط برا صندوق التأكيد على الخلفية المعتمة، نسكر الـ modal
+        <div
+          className="confirm-modal-backdrop"
+          role="presentation"
+          onClick={() => {
+            if (!deleteProductMutation.isPending) { //إذا الحذف مو isPending يعني عملية الحذف حالياً مو قيد التنفيذ فمنعمل setProductToDelete(null)، فشرط {productToDelete && ...} بصير false وبتختفي نافذة التأكيد.
+              setProductToDelete(null);
+            }
+          }}
+        >
+          {/* الـ confirm-modal هو الصندوق الموجود بالنص. */}
+          <div
+            className="confirm-modal"
+            role="alertdialog"
+            aria-modal="true"
+            aria-labelledby="delete-product-title"
+            onClick={(event) => event.stopPropagation()} //stopPropagation() معناها: وقف انتقال حدث الضغط للعنصرالاب
+          // لأن الـ modal الداخلي موجود جوّا الـ backdrop. بدونها، لو ضغطت جوّا الصندوق نفسه، حدث الضغط ممكن يطلع للأب ويشغّل:  setProductToDelete(null);
+          >
+            <h2 id="delete-product-title">
+              {actionsT("deleteConfirmTitle")}
+            </h2>
+
+            <p>
+              {actionsT("deleteConfirmMessage")}
+            </p>
+
+            <strong className="delete-product-name">
+              {productToDelete.name_i18n?.[locale] ?? ""}
+            </strong>
+
+            {deleteError && (
+              <p
+                className="error-message"
+                role="alert"
+              >
+                {deleteError}
+              </p>
+            )}
+
+            <div className="confirm-modal-actions">
+              <button
+                className="secondary-button"
+                type="button"
+                disabled={deleteProductMutation.isPending}
+                onClick={() => setProductToDelete(null)}
+              >
+                {actionsT("cancel")}
+              </button>
+
+              <button
+                className="danger-button"
+                type="button"
+                disabled={deleteProductMutation.isPending}
+                onClick={handleDeleteProduct}
+              >
+                {deleteProductMutation.isPending
+                  ? actionsT("deleting")
+                  : actionsT("confirmDelete")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
+
   );
+
 }
 // هذا يظهر صفوف تحميل وهمية Skeleton بدل المنتجات وقت isPending
 function TableLoadingRows({ label }: { label: string }) {
@@ -237,6 +419,7 @@ function TableLoadingRows({ label }: { label: string }) {
           ))}
         </tr>
       ))}
+
     </>
   );
 }

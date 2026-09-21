@@ -3,4 +3,10 @@ export const queryKeys = { // queryKey يعني React Query عنده كاش دا
   // ["store", "products"] → بيانات المنتجات ووقت تعمل invalidateQueries بنفس المفتاح، يعرف أن المقصود تحديث بيانات المنتجات تحديدًا.  
   storeProducts: ["store", "products"] as const, 
   categories: ["categories"],
+  // ليش function؟  لأنه كل منتج لازم يكون إله cache منفصل  
+    product: (id: string) => [
+    "product",
+    id,
+  ],
+  store: ["store"],
 };

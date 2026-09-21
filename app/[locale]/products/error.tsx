@@ -2,16 +2,15 @@
 
 import {useTranslations} from "next-intl";
 
+ //   مثال :app/[locale]/products/error.tsx
+ // app/[locale]/products/page.tsx
+ // app/[locale]/products/[id]/page.tsx
+ // هون error.tsx تبع products يمسك أخطاء: /ar/products /ar/products/123
+
 export default function ErrorPage({
   error,
-  reset, //reset هي function من Next تعيد محاولة render  للمسار الحالي الذي ظهر فيه الخطأ من جديد
-//   مثال :app/[locale]/products/error.tsx
-// app/[locale]/products/page.tsx
-// app/[locale]/products/[id]/page.tsx
-// هون error.tsx تبع products يمسك أخطاء: /ar/products /ar/products/123
 }: {
   error: Error;
-  reset: () => void; //يعني دالة ما بتأخذ أي arguments و ما بترجع قيمة
 }) {
   const t = useTranslations("SessionError");
 
@@ -27,7 +26,11 @@ export default function ErrorPage({
         <h1>{t("title")}</h1>
         <p>{t("description")}</p>
 
-        <button className="primary-button" type="button" onClick={reset}>
+        <button
+          className="primary-button"
+          type="button"
+          onClick={() => window.location.reload()} //بيعمل reload كامل للصفحة،
+        >
           {t("retry")}
         </button>
       </section>

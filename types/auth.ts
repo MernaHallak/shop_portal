@@ -73,3 +73,14 @@ export interface LoginResponse {
   store: AuthStore;
 }
 
+export interface RefreshResponse {
+  message: string;
+
+  session: {
+    access_token: string; //هو الـ access token الجديد الناتج عن عملية الـ refresh
+    expires_at: number;
+    expires_in: number;
+    token_type: string;
+  };
+  // ما في داعي حاليًا نعمل types لـ user/profile/store الموجودين بالـ response لأننا ما رح نستخدمهم بعملية التجديد نفسها.
+}

@@ -108,16 +108,113 @@
         "tooManyImages": "يمكن رفع 10 صور كحد أقصى.",
         "invalidImageType": "نوع الصورة غير مدعوم.",
         "imageTooLarge": "يجب ألا يتجاوز حجم الصورة 5MB.",
+        "englishOnly": "يرجى إدخال النص باللغة الإنجليزية فقط.",
+        "arabicOnly": "يرجى إدخال النص باللغة العربية فقط.",
         "fields": {
           "description": "الوصف",
           "subcategory": "التصنيف الفرعي"
         }
       }
+    },
+    "actions": {
+      "label": "إجراءات",
+      "delete": "حذف المنتج",
+      "deleting": "جارٍ حذف المنتج…",
+      "deleteConfirmTitle": "حذف المنتج",
+      "deleteConfirmMessage": "هل أنت متأكد من حذف هذا المنتج؟ لا يمكن التراجع عن هذا الإجراء.",
+      "cancel": "إلغاء",
+      "confirmDelete": "حذف",
+      "edit": "تعديل المنتج",
+      "view": "عرض المنتج"
+    },
+    "edit": {
+      "title": "تعديل المنتج",
+      "description": "عدّل بيانات المنتج ثم احفظ التغييرات.",
+      "loading": "جارٍ تحميل بيانات المنتج…",
+      "currentImages": "الصور الحالية",
+      "newImages": "إضافة صور جديدة",
+      "submit": "حفظ التغييرات",
+      "submitting": "جارٍ حفظ التغييرات…",
+      "cancel": "إلغاء",
+      "noChanges": "لم يتم إجراء أي تغييرات على المنتج.",
+      "removeExistingImage": "حذف الصورة",
+      "deletingImage": "جارٍ حذف الصورة…",
+      "imageDeletedSuccessfully": "تم حذف الصورة بنجاح."
+    },
+    "details": {
+      "title": "تفاصيل المنتج",
+      "pageDescription": "عرض جميع بيانات المنتج.",
+      "loading": "جارٍ تحميل بيانات المنتج…",
+      "loadError": "تعذر تحميل بيانات المنتج.",
+      "edit": "تعديل المنتج",
+      "name": "اسم المنتج",
+      "price": "السعر",
+      "category": "التصنيف",
+      "subcategory": "التصنيف الفرعي",
+      "status": "الحالة",
+      "active": "نشط",
+      "inactive": "غير نشط",
+      "description": "الوصف",
+      "images": "صور المنتج",
+      "noImages": "لا توجد صور.",
+      "notAvailable": "غير متوفر"
     }
   },
   "SessionError": {
     "title": "حدث خطأ",
     "description": "تعذر التحقق من الجلسة حاليًا.",
     "retry": "حاول مرة أخرى"
+  },
+  "Dashboard": {
+    "products": "المنتجات",
+    "storeSettings": "إعدادات المتجر",
+    "store": "المتجر",
+    "loadingStore": "جارٍ تحميل المتجر..."
+  },
+  "Store": {
+    "details": {
+      "title": "إعدادات المتجر",
+      "pageDescription": "عرض وإدارة بيانات المتجر.",
+      "loading": "جارٍ تحميل بيانات المتجر…",
+      "loadError": "تعذر تحميل بيانات المتجر.",
+      "edit": "تعديل المتجر",
+      "name": "اسم المتجر",
+      "location": "الموقع",
+      "phone": "رقم الهاتف",
+      "status": "الحالة",
+      "active": "نشط",
+      "inactive": "غير نشط",
+      "description": "الوصف",
+      "socialLinks": "روابط التواصل",
+      "notAvailable": "غير متوفر"
+    },
+    "edit": {
+      "title": "تعديل المتجر",
+      "pageDescription": "عدّل بيانات المتجر ثم احفظ التغييرات.",
+      "loading": "جارٍ تحميل بيانات المتجر…",
+      "loadError": "تعذر تحميل بيانات المتجر.",
+      "retry": "حاول مرة أخرى",
+      "name": "اسم المتجر بالإنجليزية",
+      "nameAr": "اسم المتجر بالعربية",
+      "description": "الوصف بالإنجليزية",
+      "descriptionAr": "الوصف بالعربية",
+      "location": "الموقع بالإنجليزية",
+      "locationAr": "الموقع بالعربية",
+      "phone": "رقم الهاتف",
+      "logo": "شعار المتجر",
+      "cover": "صورة الغلاف",
+      "submit": "حفظ التغييرات",
+      "submitting": "جارٍ حفظ التغييرات…",
+      "cancel": "إلغاء",
+      "noChanges": "لم يتم إجراء أي تغييرات.",
+      "updateError": "تعذر تحديث بيانات المتجر.",
+      "logoPreview": "معاينة شعار المتجر",
+      "coverPreview": "معاينة صورة الغلاف",
+      "validation": {
+        "nameRequired": "اسم المتجر مطلوب.",
+        "invalidImageType": "نوع الصورة غير مدعوم. استخدم JPEG أو PNG أو WebP أو AVIF.",
+        "imageTooLarge": "حجم الصورة يجب ألا يتجاوز 5MB."
+      }
+    }
   }
 }
