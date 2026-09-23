@@ -19,7 +19,7 @@ export function useUpdateProduct() {
 
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: queryKeys.storeProducts,
+        queryKey: queryKeys.storeProducts(),
       });
     },
   });

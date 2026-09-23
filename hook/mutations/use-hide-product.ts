@@ -15,7 +15,7 @@ export function useHideProduct() {
 
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: queryKeys.storeProducts,
+        queryKey: queryKeys.storeProducts(),
       });
     },
   });

@@ -15,7 +15,7 @@ export function useCreateProduct() {
     onSuccess: async () => {
       // اعتبر بيانات منتجات المتجر الموجودة بالكاش قديمة stale، وارجع حدّثها. React Query يعيد طلب getStoreProducts
       await queryClient.invalidateQueries({ 
-        queryKey: queryKeys.storeProducts,
+        queryKey: queryKeys.storeProducts(),
       });
     },
   });

@@ -35,7 +35,7 @@ export function useDeleteProductImage() {
         }),
 
         queryClient.invalidateQueries({
-          queryKey: queryKeys.storeProducts,
+          queryKey: queryKeys.storeProducts(),
         }),
       ]);
     },
