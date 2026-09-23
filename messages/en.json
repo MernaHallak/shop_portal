@@ -68,6 +68,7 @@
     "createTitle": "Add new product",
     "createDescription": "Enter the product information to add it to your store.",
     "backToProducts": "Back to products",
+    "searchPlaceholder": "Search products...",
     "Validation": {
       "translationArRequired": "Please enter {field} in Arabic.",
       "translationEnRequired": "Please enter {field} in English.",

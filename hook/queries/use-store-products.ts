@@ -2,11 +2,12 @@ import { useQuery } from "@tanstack/react-query";
 import { getStoreProducts } from "@/api/products";
 import {queryKeys} from "@/api/query-keys";
 import {normalizeApiError} from "@/lib/api-error";
+import { StoreProductsParams } from "@/types/product";
 
-export function useStoreProducts() {
+export function useStoreProducts( params?: StoreProductsParams,) {
   return useQuery({
-    queryKey: queryKeys.storeProducts,
-    queryFn: getStoreProducts,
+     queryKey: queryKeys.storeProducts(params),
+    queryFn: () => getStoreProducts(params),
     // ما حددت ال staleTime لان محددتا من وقت انشاء ال new QueryClient
     retry: (failureCount, error) => { //بيحدد هل يعيد الطلب بعد الفشل أو لا
       const status = normalizeApiError(error).status; //إذا كان status === 401 يعني المستخدم غير مسجّل دخول أو التوكن منتهي، لا تعيد الطلب

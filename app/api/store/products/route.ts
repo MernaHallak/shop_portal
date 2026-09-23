@@ -1,9 +1,25 @@
 import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { backendClient } from "@/lib/backend-client";
-import {normalizeBackendError} from "@/lib/server/backend-error";
+import { normalizeBackendError } from "@/lib/server/backend-error";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  // Client Component
+  // → useSearchParams()
+
+  // Route Handler / Server
+  // → request.nextUrl.searchParams
+  const { searchParams } = request.nextUrl;
+
+  const search = searchParams.get("search"); //...(search ? { search: search } : {})
+  const page = searchParams.get("page");
+  const limit = searchParams.get("limit");
+
+  const params = {
+    ...(search ? { search } : {}),
+    ...(page ? { page } : {}),
+    ...(limit ? { limit } : {}),
+  };
   try {
     const cookieStore = await cookies();
     const accessToken = cookieStore.get("access_token")?.value;
@@ -22,6 +38,7 @@ export async function GET() {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
+        params,
       },
     );
 
@@ -31,6 +48,6 @@ export async function GET() {
       error,
       "Unable to load store products",
     );
-    return NextResponse.json(normalized.body, {status: normalized.status});
+    return NextResponse.json(normalized.body, { status: normalized.status });
   }
 }

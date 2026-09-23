@@ -332,7 +332,7 @@ export default function StoreEditForm() {
                         />
                     </div>
 
-                    <div className="field">
+                    {/* <div className="field">
                         <label htmlFor="nameAr">
                             {t("nameAr")}
                         </label>
@@ -344,7 +344,7 @@ export default function StoreEditForm() {
                                 setNameAr(event.target.value)
                             }
                         />
-                    </div>
+                    </div> */}
 
                     <div className="field">
                         <label htmlFor="location">

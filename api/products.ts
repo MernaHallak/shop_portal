@@ -8,15 +8,24 @@ import type {
   HideProductResponse,
   ProductResponse,
   ProductsResponse,
+  StoreProductsParams,
   UpdateProductRequest,
   UpdateProductResponse,
 } from "@/types/product";
 
 
-export async function getStoreProducts(): Promise<ProductsResponse> {
-  const response = await apiClient.get<ProductsResponse>("/store/products");
+export async function getStoreProducts(params?: StoreProductsParams): Promise<ProductsResponse> {
+  const response = await apiClient.get<ProductsResponse>("/store/products", { params });
   return response.data;
 }
+
+// الميزة هون إن Axios بيحوّل:{
+//   search: "Dell",
+//   page: 1,
+//   limit: 24,
+// }
+// تلقائيًا إلى:/api/store/products?search=Dell&page=1&limit=24  
+// لهيك بال Route Handler بيوصلو الطلب بهل الشكل /api/store/products?search=Dell&page=1&limit=24 ومنقدر نقرأها عبر request.nextUrl.searchParams.get("search") 
 
 export async function createProduct(
   product: CreateProductRequest,

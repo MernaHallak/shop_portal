@@ -71,6 +71,12 @@ export interface ProductsResponse {
   products: Product[];
 }
 
+export interface StoreProductsParams {
+  search?: string;
+  page?: number;
+  limit?: number;
+}
+
 export interface CreateProductRequest { // مدخلات انشاء منتج
   name: string; 
   name_ar: string;
@@ -154,3 +160,4 @@ export interface DeleteProductImageResponse {
     failed: number;
   };
 }
+

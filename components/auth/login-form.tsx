@@ -18,10 +18,16 @@ export function LoginForm() {
     email?: string;
     password?: string;
   }>({});
+  const [isRedirecting, setIsRedirecting] = useState(false);
   const { mutate, error, isError, isPending, reset } = useLogin(); //// الخطأ اللي رماه Axios بعد فشل تسجيل الدخول بالباك
   // useMutation يعني دالة ال useLogin ما بيشتغل لحاله  mutate هو اللي يشغّله، أما useQuery غالبًا يشتغل تلقائيًا عند mount ويجيب الداتا.
   function handleSubmit(event: FormEvent<HTMLFormElement>) { //حدث إرسال الفورم.
     event.preventDefault();
+
+    if (isPending || isRedirecting) {
+      return;
+    }
+
     setFieldErrors({});
     reset(); //reset() بيمسح حالة آخر طلب من الـ mutation مثل error, isError, data, وstatus يعني تمسح حالة الباك القديمة 
     // مسحنا اخر خطا راجع من الباك حتى اذا كان الخطا هو خطا فرونت للباسوورد fieldErrors.password  فما يعرض بالايميل خطا الباك السابق الكان ناتج عن خطا الايميل normalizedError?.fieldErrors.email. يعني كل محاولة ارسال جديدة، نبدأ من جديد ونمسح كل الاخطاء السابقة للباك واخطاء الفرونت عم امحيا ب setFieldErrors({});
@@ -44,10 +50,17 @@ export function LoginForm() {
 
     mutate( //mutate بتشغل الدالة الموجودة بال mutationFn وبترسل لها الداتا
       { email: email.trim(), password },
-      { onSuccess: () => router.replace("/products") }, //خزّن دالة داخل onSuccess ولما login تنجح، React Query ينفذonSuccess
+      {
+        onSuccess: () => {
+          setIsRedirecting(true);
+          router.replace("/products");
+        },
+      }, //خزّن دالة داخل onSuccess ولما login تنجح، React Query ينفذonSuccess
       // هيك غلط onSuccess: router.replace("/products") لان هيك معناها نفّذ router.replace فورا أثناء render وخزّن نتيجة التنفيذ داخل onSuccess
     );
   }
+
+  const isSubmitting = isPending || isRedirecting;
 
   const normalizedError = isError
     ? normalizeApiError(error, "login") //لأن الخطأ جاي من عملية تسجيل الدخول حطينا "login"
@@ -93,7 +106,7 @@ export function LoginForm() {
                 reset();
               }}
               placeholder={t("emailPlaceholder")}
-              disabled={isPending}
+              disabled={isSubmitting}
               aria-invalid={Boolean(emailError)}
               aria-describedby={emailError ? "email-error" : undefined}
               required
@@ -117,7 +130,7 @@ export function LoginForm() {
                 reset();
               }}
               placeholder={t("passwordPlaceholder")}
-              disabled={isPending}
+              disabled={isSubmitting}
               aria-invalid={Boolean(passwordError)}
               aria-describedby={passwordError ? "password-error" : undefined}
               required
@@ -135,9 +148,9 @@ export function LoginForm() {
             </p>
           )}
 
-          <button className="primary-button" type="submit" disabled={isPending}>
-            {isPending && <span className="spinner" aria-hidden="true" />}
-            {isPending ? t("submitting") : t("submit")}
+          <button className="primary-button" type="submit" disabled={isSubmitting}>
+            {isSubmitting && <span className="spinner" aria-hidden="true" />}
+            {isSubmitting ? t("submitting") : t("submit")}
           </button>
         </form>
       </section>

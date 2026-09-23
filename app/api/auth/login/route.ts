@@ -167,7 +167,8 @@ export async function POST(request: NextRequest) {//حتى بس الفرونت �
       path: "/",   // يعني الكوكي تنرسل مع كل مسارات الموقع.
       maxAge: backendData.session.expires_in,
     });
-    response.cookies.set({
+    response.cookies.set({ // response.cookies.set(...) بخلي Next يضيف Set-Cookie ضمن Response Headers للرد من Next route  للمتصفح هل الشي منشوفو من النيتورك
+      // بالـ Network منشوف response تبع Next route للمتصفح، مو response الطلب الداخلي من Next للـ backend.
       name: "refresh_token",
       value: backendData.session.refresh_token,
       httpOnly: true,
@@ -175,8 +176,8 @@ export async function POST(request: NextRequest) {//حتى بس الفرونت �
       sameSite: "lax",
         // الكوكي بتنرسل فقط مع /api/auth والمسارات اللي تحته.
       // لأن access_token منحتاجه بمعظم الطلبات المحمية مثل: إضافة، تعديل، حذف المنتجات والطلبات، لذلك path: "/".
-      // أما refresh_token ما لازم ينرسل إلا لنقاط المصادقة مثل /api/auth/refresh أو logout،فبنضيّق مساره لتقليل انكشافه.
-      path: "/api/auth",
+      // أما refresh_token ما لازم ينرسل إلا لنقاط المصادقة مثل /api/auth/refresh ،فبنضيّق مساره لتقليل انكشافه.
+      path: "/api/auth/refresh", //هيك refresh_token بينبعت تلقائيًا فقط مع طلبات /api/auth/refresh
       maxAge: 60 * 60 * 24 * 30,
     });
 // access_token: التوكن اللي تستخدمه مع الطلبات المحمية، عمره قصير، وإذا انتهى يعطيك غالبًا 401.

@@ -37,6 +37,7 @@
     "emailRequired": "أدخل بريدًا إلكترونيًا صحيحًا.",
     "passwordRequired": "أدخل كلمة المرور.",
     "loginError": "تعذّر تسجيل الدخول."
+  
   },
   "Products": {
     "eyebrow": "كتالوج المتجر",
@@ -68,6 +69,7 @@
     "createTitle": "إضافة منتج جديد",
     "createDescription": "أدخل بيانات المنتج لإضافته إلى متجرك.",
     "backToProducts": "العودة إلى المنتجات",
+     "searchPlaceholder": "ابحث باسم المنتج...",
     "Validation": {
       "translationArRequired": "يرجى إدخال {field} باللغة العربية.",
       "translationEnRequired": "يرجى إدخال {field} باللغة الإنجليزية.",

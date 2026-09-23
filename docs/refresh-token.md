@@ -70,4 +70,45 @@ return apiClient(originalRequest)
 بدون refreshPromise ممكن كل واحد يعمل:  POST /auth/refresh  فتصير 3 عمليات refresh بنفس الوقت. نحنا بدنا:refresh واحد فقط  والباقي ينتظروه.  
 
 احفظيها بهاي الجملة: أول 401 يبدأ Refresh واحد → باقي الـ 401 ينتظروه → إذا نجح، كل Request يعيد نفسه → بالنهاية refreshPromise ترجع null.
- 
+ --------------------
+
+ عم نختبر حالة الـ response من خلال الجزء التاني من response.use(...)، يعني لما يصير error. 
+
+الاختبار   هون:  const status = error.response?.status; وبعدين:
+
+if (status !== 401)
+ليش عم نختبره؟ لأننا بدنا نعمل refresh فقط إذا السبب هو 401، يعني غالبًا الـ access token منتهي أو غير صالح.
+أما إذا الرد مثل:400 403 500 ما منعمل refresh، ومنرجع الخطأ طبيعي.
+
+-------------------------
+
+أي Component
+    │
+    │ يستعمل apiClient
+    ▼
+مثلاً:
+PATCH /api/store/products/edit/123
+    │
+    ▼
+المتصفح يرسل الكوكيز المسموح فيها
+    │
+    ▼
+Next API Route
+    │
+    ▼
+Backend
+
+إذا الطلب نجح:
+
+Backend → 200
+          │
+          ▼ لان نحنا حاطين لنراقب الرد interceptors.response
+apiClient interceptor
+          │
+          ▼
+(response) => response
+          │
+          ▼
+الطلب يكمل طبيعي
+
+اما بحالة الخطا منفذ الكود api/client

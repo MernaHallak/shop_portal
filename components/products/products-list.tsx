@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 
 import { useStoreProducts } from "@/hook/queries/use-store-products";
@@ -10,7 +10,7 @@ import { getLocalizedValue } from "@/lib/i18n/get-localized-value";
 import type { LocalizedText, Product, SupportedLocale } from "@/types/product";
 import { useDeleteProduct } from "@/hook/mutations/use-delete-product";
 import Image from "next/image";
-import { Eye, Pencil, Trash2 } from "lucide-react";
+import { Eye, Pencil, Search, Trash2 } from "lucide-react";
 import { useHideProduct } from "@/hook/mutations/use-hide-product";
 import { useUpdateProduct } from "@/hook/mutations/use-update-product";
 // الحماية الاساسية بال ProductsPage هذا فقط حماية إضافية لو طلب ProductsList فشل بعد ما الصفحة انعرضت، لأنه useEffect يشتغل بعد أول render، لذلك ممكن يظهر جزء من الصفحة لحظة قصيرة.
@@ -24,9 +24,14 @@ export function ProductsList() {
   const locale = useLocale() as SupportedLocale;
   const router = useRouter();
 
+  const [search, setSearch] = useState("");
+const [debouncedSearch, setDebouncedSearch] = useState(""); //هي نسخة من قيمة البحث بس متأخرة شوي.
+
   const deleteProductMutation = useDeleteProduct();
   const { data, isPending, isError, error, refetch, isFetching } =
-    useStoreProducts();
+    useStoreProducts({
+    search: debouncedSearch || undefined, //حتى إذا الحقل فاضي ما نرسل:  ?search=  
+  });
 
   const hideProductMutation = useHideProduct();
   const updateProductMutation = useUpdateProduct();
@@ -53,6 +58,17 @@ export function ProductsList() {
   const [updatingProductId, setUpdatingProductId] =
   useState<string | null>(null);
 
+
+
+useEffect(() => {
+  const timeout = window.setTimeout(() => {
+    setDebouncedSearch(search.trim());
+  }, 350);
+
+  return () => {
+    window.clearTimeout(timeout);
+  };
+}, [search]);
 
  async function handleStatusToggle(product: Product) {
   setUpdatingProductId(product.id);
@@ -99,7 +115,7 @@ export function ProductsList() {
   return (
     <section className="data-table-panel" aria-labelledby="products-table-title">
       <div className="table-toolbar">
-        <div>
+        <div className="table-toolbar-copy">
           <h2 id="products-table-title">{t("tableTitle")}</h2>
           <p>{toolbarDescription}</p>
         </div>
@@ -111,6 +127,24 @@ isFetching = أي عملية fetch شغالة: أول تحميل أو تحديث
               <span className="spinner dark" aria-hidden="true" />
             </span>
           )}
+
+ <div className="products-search">
+      <Search
+        size={18}
+        aria-hidden="true"
+      />
+
+      <input
+        type="search"
+        value={search}
+        onChange={(event) =>
+          setSearch(event.target.value)
+        }
+        placeholder={t("searchPlaceholder")}
+        aria-label={t("searchPlaceholder")}
+      />
+    </div>
+
           <button
             className="add-product-button"
             type="button"

@@ -23,7 +23,7 @@ export async function POST() { //السبب نستخدم POST للـ logout لأ
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
-    path: "/api/auth",
+    path: "/api/auth/refresh",
     maxAge: 0,
   });
 

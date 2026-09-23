@@ -1,6 +1,6 @@
 import {ProductsList} from "@/components/products/products-list";
 import {DashboardShell} from "@/components/dashboard/dashboard-shell";
-import {Link, redirect} from "@/i18n/navigation";
+import {redirect} from "@/i18n/navigation";
 import {getSessionStatus} from "@/lib/auth/session";
 import { notFound } from "next/navigation";
 import { PageHeader } from "@/components/dashboard/page-header";
@@ -24,11 +24,6 @@ export default async function ProductsPage({params}: ProductsPageProps) {
     eyebrow={t("eyebrow")}
     title={t("title")}
     description={t("description")}
-     actions={
-    <Link href="/products/create">
-      {t("addProduct")}
-    </Link>
-  }
   />
 
   <ProductsList />

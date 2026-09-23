@@ -53,12 +53,12 @@ export default function StoreDetails() {
     return null;
   }
 
-  const storeName =
-    store.name_i18n?.[locale] ??
-    (locale === "ar"
-      ? store.name_ar
-      : store.name) ??
-    store.name;
+  const storeName = store.name
+  // store.name_i18n?.[locale] ??
+  // (locale === "ar"
+  //   ? store.name_ar
+  //   : store.name) ??
+  // store.name;
 
   const storeDescription =
     store.description_i18n?.[locale] ??
@@ -71,6 +71,11 @@ export default function StoreDetails() {
     (locale === "ar"
       ? store.location_ar
       : store.location);
+
+  function getWhatsappHref(value: string) {
+    const phone = value.replace(/\D/g, ""); //replace(/\D/g, "") تشيل أي شيء مو رقم، مثل + والمسافات.
+    return `https://wa.me/${phone}`;
+  }
 
   return (
     <section className="store-details-panel">
@@ -112,7 +117,7 @@ export default function StoreDetails() {
 
         <div>
           <h2>{storeName}</h2>
-          <p>@{store.slug}</p>
+          {/* <p>@{store.slug}</p> */}
         </div>
       </div>
 
@@ -160,34 +165,65 @@ export default function StoreDetails() {
         <div className="store-details-grid">
           <div className="store-details-item">
             <span>WhatsApp</span>
-            <strong>
-              {store.whatsapp_url ??
-                t("notAvailable")}
-            </strong>
+
+            {store.whatsapp_url ? (
+              <a
+                href={getWhatsappHref(store.whatsapp_url)}
+                target="_blank"
+                rel="noopener noreferrer" //يعني هي للحماية والخصوصية عند فتح رابط خارجي بتبويب جديد
+              >
+                {store.whatsapp_url}
+              </a>
+            ) : (
+              <strong>{t("notAvailable")}</strong>
+            )}
           </div>
 
           <div className="store-details-item">
             <span>Facebook</span>
-            <strong>
-              {store.facebook_url ??
-                t("notAvailable")}
-            </strong>
+
+            {store.facebook_url ? (
+              <a
+                href={store.facebook_url}
+                target="_blank"
+                rel="noopener noreferrer" //يعني هي للحماية والخصوصية عند فتح رابط خارجي بتبويب جديد
+              >
+                {store.facebook_url}
+              </a>
+            ) : (
+              <strong>{t("notAvailable")}</strong>
+            )}
+
           </div>
 
           <div className="store-details-item">
             <span>Instagram</span>
-            <strong>
-              {store.instagram_url ??
-                t("notAvailable")}
-            </strong>
+            {store.instagram_url ? (
+              <a
+                href={store.instagram_url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {store.instagram_url}
+              </a>
+            ) : (
+              <strong>{t("notAvailable")}</strong>
+            )}
           </div>
 
           <div className="store-details-item">
             <span>Telegram</span>
-            <strong>
-              {store.telegram_url ??
-                t("notAvailable")}
-            </strong>
+            {store.telegram_url ? (
+              <a
+                href={store.telegram_url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {store.telegram_url}
+              </a>
+            ) : (
+              <strong>{t("notAvailable")}</strong>
+            )}
           </div>
         </div>
       </div>
